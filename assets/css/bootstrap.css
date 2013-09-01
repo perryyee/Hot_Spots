@@ -322,7 +322,6 @@ a {
 a:hover,
 a:focus {
   color: #2a6496;
-  text-decoration: underline;
 }
 
 a:focus {
@@ -467,7 +466,7 @@ h6 {
 
 h1,
 .h1 {
-  font-size: 38px;
+  font-size: 50px;
 }
 
 h2,
@@ -1454,7 +1453,7 @@ input[type="number"]::-webkit-inner-spin-button {
   display: block;
   width: 100%;
   height: 34px;
-  padding: 6px 12px;
+  padding: 3px 3px;
   font-size: 14px;
   line-height: 1.428571429;
   color: #555555;
@@ -1466,6 +1465,10 @@ input[type="number"]::-webkit-inner-spin-button {
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
           transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+
+.register {
+  width: 80%;
 }
 
 .form-control:focus {
@@ -2306,6 +2309,11 @@ input[type="button"].btn-block {
   margin-bottom: 1px;
 }
 
+.menu2 {
+  margin-right: -20px;
+  width: 180px;
+}
+
 .list-group {
   padding-left: 0;
   margin-bottom: 20px;
@@ -2490,6 +2498,7 @@ a.list-group-item.active .list-group-item-text {
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  opacity: 0.8;
 }
 
 .well blockquote {
@@ -2773,7 +2782,7 @@ button.close {
 
 .navbar {
   position: relative;
-  min-height: 50px;
+  min-height: 40px;
   padding-right: 15px;
   padding-left: 15px;
   margin-bottom: 20px;
@@ -2970,7 +2979,7 @@ button.close {
 }
 
 .navbar-inverse {
-  background-color: #222222;
+  background-color: #467EAF;
 }
 
 .navbar-inverse .navbar-brand {
@@ -3504,17 +3513,16 @@ button.close {
 .modal-dialog {
   z-index: 1050;
   width: auto;
-  padding: 10px;
+  margin-top: 200px;
   margin-right: auto;
   margin-left: auto;
 }
 
 .modal-content {
   position: relative;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.85);;
   border: 1px solid #999999;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
   outline: none;
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
           box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
@@ -3557,8 +3565,8 @@ button.close {
 }
 
 .modal-body {
+  height: 450px;
   position: relative;
-  padding: 20px;
 }
 
 .modal-footer {
@@ -3605,11 +3613,102 @@ button.close {
   .modal-dialog {
     right: auto;
     left: 50%;
-    width: 600px;
+    width: 960px;
     padding-top: 30px;
     padding-bottom: 30px;
   }
   .modal-content {
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  }
+}
+
+.modal2-body {
+  height: 120px;
+  position: relative;
+  text-align: center;
+}
+
+.modal2-open {
+  overflow: hidden;
+}
+
+.modal2 {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  display: none;
+  overflow: auto;
+  overflow-y: scroll;
+}
+
+.modal2.fade .modal2-dialog {
+  -webkit-transform: translate(0, -25%);
+      -ms-transform: translate(0, -25%);
+          transform: translate(0, -25%);
+  -webkit-transition: -webkit-transform 0.3s ease-out;
+     -moz-transition: -moz-transform 0.3s ease-out;
+       -o-transition: -o-transform 0.3s ease-out;
+          transition: transform 0.3s ease-out;
+}
+
+.modal2.in .modal2-dialog {
+  -webkit-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+          transform: translate(0, 0);
+}
+
+.modal2-dialog {
+  z-index: 1050;
+  width: auto;
+  margin-top: 300px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.modal2-content {
+  position: relative;
+  background-color: rgba(255, 255, 255, 1);;
+  border: 1px solid #999999;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  outline: none;
+  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+  background-clip: padding-box;
+}
+
+.modal2-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1030;
+  background-color: #000000;
+}
+
+.modal2-backdrop.fade {
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+
+.modal2-backdrop.in {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+
+@media screen and (min-width: 768px) {
+  .modal2-dialog {
+    right: auto;
+    left: 50%;
+    width: 400px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+  .modal2-content {
     -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   }
@@ -4794,4 +4893,133 @@ td.visible-print {
   td.hidden-print {
     display: none !important;
   }
+}
+
+.clear {
+  clear:both;
+}
+
+.register_back {
+  background: url('../images/sf_night.jpg') no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.login_back {
+  background: url('../images/sf_day.jpg') no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
+}
+
+.login{
+  text-align: center;
+}
+
+.login form {
+  width: 60%;
+  margin-left: 100px;
+}
+
+.login img {
+  width:60%;
+  height:60%;
+}
+
+.register_center {
+  margin-top: 130px;
+}
+
+.login_center {
+  margin-top: 272px;
+  margin-bottom: 272px;
+}
+
+.glyph {
+  /*color:#58585A;*/
+  color: black;
+}
+
+.glyph2 {
+  /*color:#58585A;*/
+  color: black;
+  margin: 5px 5px;
+}
+
+.linkbut {
+  background-color: inherit;
+  padding: 0px;
+  border: 0px;
+  vertical-align: middle;
+}
+
+.smaller {
+  width: 25%;
+}
+.smallest {
+  width: 15%;
+}
+
+.navcontent {
+  margin-top: 5px;
+}
+.nav-form {
+  margin-top: 2px;
+}
+
+.navbar form input{
+  height: 25px;
+}
+
+.navbar form select{
+  height: 25px;
+}
+
+.topspots {
+  width: 360px;
+  height: 250px;
+  border: 1px solid black;
+  margin-bottom: 5px;
+
+}
+
+.topspots:hover {
+  background-color: blue;
+}
+
+#toppics {
+  margin-top: 80px;
+  margin-bottom: 150px;
+  text-align: center;
+}
+.logo{
+  width: 200px;
+  height: 61px;
+}
+
+#modal_pic {
+  height: 450px;
+  width: 70%;
+  margin-right: 10px;
+  opacity: 1;
+}
+
+#topspot_info {
+  overflow: auto;
+}
+
+#first_login {
+  text-align: center;
+  overflow:auto;
+}
+
+.login .fb_login {
+  height: 10%;
+  width: 10%;
+  margin-right: 10px;
+}
+
+.fb_logo {
+  margin-top: 10px;
+  width: 100px;
+  height: 100px;
 }

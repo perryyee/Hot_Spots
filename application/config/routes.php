@@ -38,7 +38,11 @@
 |
 */
 
-$route['default_controller'] = "welcome";
+$route['default_controller'] = "users/login";
+$route['register'] = "users/register";
+$route['edit/%1'] = "users/edit/%1";
+$route['topspots'] = "main/topspots";
+$route['heatmap'] = "main/heatmap";
 $route['404_override'] = '';
 
 

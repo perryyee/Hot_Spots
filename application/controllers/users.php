@@ -55,20 +55,22 @@ class Users extends Main {
 
         if ($user)
         {
-            $this->user->logged_in = TRUE;
             $user_details = array(
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
                 'email' => $user->email,
                 'username' => $user->username,
-                'created_at' => $user->created_at
+                'facebookuser_id' => $user->facebookuser_id,
+                'logged_in' => TRUE,
+                'first_time' => FALSE
             );
             $this->session->set_userdata('user_session', $user_details);
+            $this->session->set_userdata('completion', FALSE);
             redirect( base_url('topspots'));
         }
         else
         {
-            $this->session->set_flashdata('errors', $this->user->login($user_details) );
+            $this->session->set_flashdata('errors', 'Invalid Username/Password Combination.' );
             redirect(base_url());
         }
 
@@ -91,7 +93,7 @@ class Users extends Main {
         $this->load->library('fbconnect');
         $this->load->model('user');
         $this->load->model('facebookuser');
-        
+        $first_time = FALSE;
 
         $new_user = $this->fbconnect->user;
 
@@ -99,33 +101,39 @@ class Users extends Main {
         {
             if($this->user->is_member($new_user))
             {
-                //check last update
+                //check last update before adding checkins
                 if (!$this->facebookuser->is_fbmember($new_user))
                 {
                     $this->facebookuser->register($new_user);
                     $this->fbconnect->FQL_checkin($new_user);
+                    $first_time = TRUE;
                 }
             //check twitter account
 
             }
             else
             {
+                if (!$this->facebookuser->is_fbmember($new_user)) {
+                    $first_time = TRUE; 
+                }
                 $this->facebookuser->register($new_user);
                 $this->fbconnect->FQL_checkin($new_user);
             }
             $this->user->fb_register($new_user); 
             //login with fb credentials (add to session)
-            
-
-            echo "<pre>";
-            print_r($this->fbconnect->user);
-            echo "</pre>";
-            $this->load->model('checkin');
-
-            echo "<pre>";
-            print_r($this->checkin->retrieve_checkins($new_user));
-            echo "</pre>";
-            // redirect('heatmap');
+            $user = $this->user->get_user($new_user);
+            $user_details = array(
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+                'username' => $user->username,
+                'facebookuser_id' => $user->facebookuser_id,
+                'logged_in' => TRUE,
+                'first_time' => $first_time
+            );
+            $this->session->set_userdata('user_session', $user_details);
+            $this->session->set_userdata('completion', FALSE);
+            redirect(base_url('topspots'));
         }
         else
         {

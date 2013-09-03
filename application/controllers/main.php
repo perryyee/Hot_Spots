@@ -17,26 +17,28 @@ class Main extends CI_Controller {
 	}
 
 	function heatmap() 
-	
-{		$data['title'] = 'HotSpots | Heatmap';
+	{	
+		$data['page'] = 'heatmap';	
+		$data['title'] = 'HotSpots | Heatmap';
         $this->load->view('header', $data);
         $this->load->view('heatmap');
 	}
 
 	function topspots() 
 	{
-		$data['title'] = 'HotSpots |TopSpots';
+		$data['page'] = 'topspots';
+		$data['title'] = 'HotSpots | TopSpots';
         $this->load->view('header', $data);
         $this->load->view('topspots');
 	}
 
-	// protected function is_login()
-	// {
-	// 	if(isset($this->user_session->logged_in) && is_numeric($this->user_session->id))
-	// 		return TRUE;
-	// 	else
-	// 		return FALSE;
-	// }
+	protected function is_login()
+	{
+		if(isset($this->user_session['logged_in']))
+			return TRUE;
+		else
+			return FALSE;
+	}
 	
 	function logout()
 	{

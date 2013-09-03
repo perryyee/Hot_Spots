@@ -77,7 +77,7 @@ class User extends DataMapper {
 
     }
     function get_user($user) {
-        return $this->where('id', $user['id'])->get();
+        return $this->where('email', $user['email'])->get();
     }
     function is_member($facebook_user)
     {

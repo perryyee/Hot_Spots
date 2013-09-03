@@ -19,7 +19,6 @@
 	</script>
 </head>
 <body class="login_back">
-
 <div class="container">
 <?php 
 	$errors = $this->session->flashdata('errors');

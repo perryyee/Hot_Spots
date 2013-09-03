@@ -3513,7 +3513,7 @@ button.close {
 .modal-dialog {
   z-index: 1050;
   width: auto;
-  margin-top: 200px;
+  margin-top: 125px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -3627,6 +3627,7 @@ button.close {
   height: 120px;
   position: relative;
   text-align: center;
+  padding: 5px;
 }
 
 .modal2-open {
@@ -3664,7 +3665,7 @@ button.close {
 .modal2-dialog {
   z-index: 1050;
   width: auto;
-  margin-top: 300px;
+  margin-top: 200px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -4987,8 +4988,8 @@ td.visible-print {
 }
 
 #toppics {
-  margin-top: 80px;
-  margin-bottom: 150px;
+  margin-top: 40px;
+  margin-bottom: 50px;
   text-align: center;
 }
 .logo{
@@ -5019,7 +5020,8 @@ td.visible-print {
 }
 
 .fb_logo {
-  margin-top: 10px;
+  margin-left: 5px;
+  margin-top: 5px;
   width: 100px;
   height: 100px;
 }

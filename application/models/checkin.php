@@ -12,16 +12,15 @@ class Checkin extends DataMapper {
     function save_checkins($id, $checkins)
     {
         foreach ($checkins as $checkin) {
-            $sql = "INSERT INTO checkins (id, facebookuser_id, author_id, latitude, longitude, created_at) VALUES ({$checkin['checkin_id']}, $id, {$checkin['author_uid']}, {$checkin['coords']['latitude']}, {$checkin['coords']['longitude']}, {$checkin['timestamp']})";
+            $sql = "INSERT INTO checkins (id, facebookuser_id, author_id, latitude, longitude, created_at) VALUES ('{$checkin['checkin_id']}', $id, '{$checkin['author_uid']}', {$checkin['coords']['latitude']}, {$checkin['coords']['longitude']}, {$checkin['timestamp']})";
             $this->db->query($sql);
         }
     }
-    function retrieve_checkins($user) {
-        $checkins = $this->where('facebookuser_id', $user['id'])->get();
+    function retrieve_checkins($id) {
+        $sql = "SELECT id FROM checkins WHERE facebookuser_id = $id";
+        $checkins = $this->db->query($sql)->result_array();
         return $checkins;
     }
-
-
 }
 
 /* End of file user.php */

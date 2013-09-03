@@ -45,7 +45,7 @@ class Fbconnect extends Facebook{
         	'query' => "SELECT checkin_id, author_uid, coords, timestamp FROM checkin WHERE author_uid IN (SELECT uid2 FROM friend WHERE uid1 = {$facebook_user['id']}) AND timestamp > $time",
         );
         $results = $this->api($params);
-        
+
         $new_checkin = new Checkin();
         $new_checkin->save_checkins($facebook_user['id'], $results);
 	}

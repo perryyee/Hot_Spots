@@ -1,1 +1,1 @@
-This is my first project for Coding Bootcamp.
+This is my first project for Coding Dojo.

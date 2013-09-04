@@ -1,20 +1,20 @@
 <!doctype html>
-
-<body>
-
-<div class="container">
-	<div class="row login_center">
-		<div class="col-lg-3">
-			<div class="well login">
-				<h2>Content</h2>
-			</div>
+<?php 	 
+	//automaticaly generate the 10 latest data inputs, for now Facebook Checkins
+?>
+<div class="row no-margins">
+	<div class="col-lg-2 no-margins">
+		<div class="row well feed list-group no-margins" >
+			<h3 class='text-center'>Recent Activity</h3>
+<?php  
+			echo $feed;
+?>
 		</div>
-		<div class="col-lg-9 col-lg-offset-3">
-			<div class="well login">
-				<h2>Map</h2>
-			</div>
-		</div>		
 	</div>
+	<div class="col-lg-10 col-lg-offset-2 no-margins" id="map-container">
+		<div id="map-canvas">
+		</div>
+	</div>		
 </div>
 
 

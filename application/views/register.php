@@ -8,6 +8,14 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+	<script>
+		$(function(){
+    		$('.window_resize').css({'height':((($(window).height())-485)/2)+'px'});
+    		$(window).resize(function(){
+          		$('.window_resize').css({'height':((($(window).height())-485)/2)+'px'});
+    		});
+		});
+	</script>
 </head>
 <body class="register_back">
 
@@ -30,7 +38,8 @@
 		</div>";
 	}
 ?>	
-		<div class="row register_center">
+		<div class="window_resize"></div>
+		<div class="row">
 			<div class="col-lg-4 col-lg-offset-4">
 				<div class="well register">
 						<h2>Register</h2>

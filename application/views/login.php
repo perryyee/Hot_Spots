@@ -10,12 +10,19 @@
 	<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
 	<script type="text/javascript"></script>
 	<script>
+		$(function(){
+    		$('.window_resize').css({'height':((($(window).height())-375)/2)+'px'});
+    		$(window).resize(function(){
+          		$('.window_resize').css({'height':((($(window).height())-375)/2)+'px'});
+    		});
+		});
 		$(document).ready(function(){
 			$('#loading_but').click(function () {
 		        var btn = $(this)
 		        btn.button('loading');
    			});
 		});
+
 	</script>
 </head>
 <body class="login_back">
@@ -37,7 +44,8 @@
 				</div>";
 	}
 ?>	
-	<div class="row login_center">
+	<div class="window_resize"></div>
+	<div class="row">
 		<div class="col-lg-6 col-lg-offset-3">
 			<div class="well login">
 				<img class="text-center"src="/assets/images/logo.png" alt="Logo"/>

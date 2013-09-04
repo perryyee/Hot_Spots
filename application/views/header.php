@@ -1,3 +1,6 @@
+<?php  
+		
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -69,6 +72,90 @@
 	</script>
 <?php  
 	}
+	else if ($page == 'heatmap')
+	{
+?>
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2BJLwf7VA7ZTLyZQlGkA-FL6bBKOeFdA&sensor=true">
+    </script>
+	<script>
+		var map;
+		google.maps.visualRefresh = true;
+		function initialize() {
+		  var mapOptions = {
+		    zoom: 13,
+		    center: new google.maps.LatLng(37.755, -122.443),
+		    mapTypeId: google.maps.MapTypeId.ROADMAP
+		  };
+		  map = new google.maps.Map(document.getElementById('map-canvas'),
+		      mapOptions);
+		}
+
+		// var map;
+		// google.maps.visualRefresh = true;
+		// function initialize() {
+		//   	var mapOptions = {
+		//     	zoom: 14,
+		//     	mapTypeId: google.maps.MapTypeId.ROADMAP
+		//   	};
+		//   	map = new google.maps.Map(document.getElementById('map-canvas'),
+		//       mapOptions);
+
+		// //   // Try HTML5 geolocation
+		//   	if(navigator.geolocation) {
+		//     	navigator.geolocation.getCurrentPosition(function(position) {
+		// 	      	var pos = new google.maps.LatLng(position.coords.latitude,
+		// 	                                       position.coords.longitude);
+		// 	      	var infowindow = new google.maps.InfoWindow({
+		// 	        	map: map,
+		// 	        	position: pos,
+		// 	        	content: 'Current Location.'
+		//       		});
+		//     		map.setCenter(pos);
+
+		//     }, function() {
+		//       	handleNoGeolocation(true);
+		//        });
+		//   	} else {
+		//     	// Browser doesn't support Geolocation
+		//     	handleNoGeolocation(false);
+		//   	}
+		// }
+
+		// function handleNoGeolocation(errorFlag) {
+		//   	if (errorFlag) 
+		//   	{
+		//     	var content = 'Error: The Geolocation service failed.';
+		//   	} 
+		//   	else 
+		//   	{
+		//     	var content = 'Error: Your browser doesn\'t support geolocation.';
+		//   	}
+
+		//   	var options = {
+		//     	map: map,
+		//     	position: new google.maps.LatLng(37.755, -122.443),
+		//     	content: content
+		//   	};
+
+		//   	var infowindow = new google.maps.InfoWindow(options);
+		//   	map.setCenter(options.position);
+		// }
+
+		google.maps.event.addDomListener(window, 'load', initialize);
+		
+		$(function(){
+    		$('.feed').css({'height':(($(window).height())-40)+'px'});
+    		$('#map-container').css({'height':(($(window).height())-40)+'px'});
+
+    		$(window).resize(function(){
+          		$('.feed').css({'height':(($(window).height())-40)+'px'});
+          		$('#map-container').css({'height':(($(window).height())-40)+'px'});
+    		});
+		});
+	</script>
+<?php 
+	}
 ?>
 	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.css"/>
@@ -77,8 +164,7 @@
 	<nav class="navbar navbar-inverse" role="navigation">
 		<div class="container">
 			<div class="navcontent">
-			
-				<a class="glyph pull-left" href="/topspots"><i class="icon-home icon-2x"></i></a>
+				<a class="glyph pull-left" href="/topspots"><img id='nav_logo' src="/assets/images/logo_2.png" alt="Logo"></a>
 				<div class="dropdown pull-right">
 					<a class="glyph2 pull-right" href="javascript:;" data-toggle="dropdown"><i class="icon-cog"></i></a>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
@@ -105,13 +191,13 @@
 				  	</ul>
 				</div>
 <?php 	
-   	   	   echo form_open('Heatmap/process',array('class' => 'form-inline navform'));
+   	   	   echo form_open('main/process_heatmap',array('class' => 'form-inline navform'));
 ?>		
 					<div class="row">
 						<div class="col-lg-8 col-lg-offset-2 nav-form">
 							<input class='form-control smaller' type="text" name="location">
 							<select class='form-control smallest' name='location'>
-								<option value="city">City</option>
+								<option value="city">City, State</option>
 								<option value="zip">Zip Code</option>
 							</select>
 							<input class='form-control smaller' type="text">
@@ -120,7 +206,7 @@
 								<option value="days">Days</option>
 								<option value="week">Weeks</option>
 							</select>
-							<button class='glyph linkbut' type="submit"><i class="icon-search icon-1x"></i></button>
+							<button class='glyph btn btn-default linkbut' type="submit"><i class="icon-search icon-1x"></i></button>
 						</div>
 					</div>
 				</form>

@@ -1,6 +1,5 @@
 <?php
 
-include (APPPATH.'libraries/facebook/facebook.php');
 
 class Place extends DataMapper {
 
@@ -12,24 +11,12 @@ class Place extends DataMapper {
     {
         parent::__construct($id);
     }
-    function add_places($checkins)
+    function add_places($places)
     {
-        $places = array();
         $ci =& get_instance();
         $ci->config->load('facebook', TRUE);
         $config = $ci->config->item('facebook');
-
-        $checkin = new Checkin();
         $facebook = new Facebook($config);
-
-        foreach ($checkins as $checkin) 
-        {
-            $place_id = $facebook->api("/{$checkin['id']}");
-            if (!$this->get_place($place_id['place']['id']))
-            {
-                $places[] = $facebook->api("/{$place_id['place']['id']}?fields=name,category,checkins,location,talking_about_count,website,id,were_here_count");
-            }
-        }
 
         $place_website = NULL;
         $location_street = NULL;

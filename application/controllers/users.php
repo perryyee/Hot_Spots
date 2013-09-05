@@ -16,9 +16,17 @@ class Users extends Main {
     }
     function edit() 
     {
-        $data['title'] = 'HotSpots | Edit User Information';
-        $this->load->view('header', $data);
-        $this->load->view('edit');
+        if ($this->is_login())
+        {
+            $data['page'] = 'modal';
+            $data['title'] = 'HotSpots | Edit User Information';
+            $this->load->view('header', $data);
+            $this->load->view('edit');
+        }
+        else
+        {
+            redirect(base_url());
+        }
     }
     function process_register()
     {
@@ -65,7 +73,8 @@ class Users extends Main {
                 'first_time' => FALSE
             );
             $this->session->set_userdata('user_session', $user_details);
-            $this->session->set_userdata('completion', FALSE);
+            $this->session->set_userdata('account', 'default');
+            $this->session->set_userdata('address', 'San Francisco, CA');
             redirect( base_url('topspots'));
         }
         else
@@ -132,7 +141,8 @@ class Users extends Main {
                 'first_time' => $first_time
             );
             $this->session->set_userdata('user_session', $user_details);
-            $this->session->set_userdata('completion', FALSE);
+            $this->session->set_userdata('account', 'facebook');
+            $this->session->set_userdata('address', 'San Francisco, CA');
             redirect(base_url('topspots'));
         }
         else

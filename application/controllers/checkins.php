@@ -8,13 +8,13 @@ class Checkins extends Main {
         redirect(base_url('/topspots'));
     }
     function add_checkins() {
+        $this->load->library('fbconnect');
         $this->session->set_userdata('completion', TRUE);
         $this->load->model('checkin');
-        $checkins = $this->checkin->retrieve_checkins($this->session->userdata['user_session']['facebookuser_id']);
-        $places = $this->checkin->add_checkins($checkins);
-
-        $this->load->model('place');
-        $this->place->add_places($places);
+        
+        $checkins = $this->checkin->retrieve_checkin_ids($this->session->userdata['user_session']['facebookuser_id']);
+        $this->checkin->add_checkins($checkins);
+        
         $outcome = 'Success';
         $data['outcome'] = $outcome; 
         echo json_encode($data);

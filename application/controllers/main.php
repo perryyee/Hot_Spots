@@ -18,20 +18,39 @@ class Main extends CI_Controller {
 
 	function heatmap() 
 	{	
+		if ($this->is_login())
+        {
 		$checkins = $this->get_feed_data();
-		$data['feed'] = $checkins;
-		$data['page'] = 'heatmap';	
-		$data['title'] = 'HotSpots | Heatmap';
+		$markers = $this->get_markers();
+
+		$data = array(
+			'feed' => $checkins,
+			'markers' => $markers,
+			'page' => 'heatmap',
+			'title' => 'HotSpots | Heatmap'
+		);
         $this->load->view('header', $data);
         $this->load->view('heatmap');
+    	}
+        else
+        {
+            redirect(base_url());
+        }
 	}
 
 	function topspots() 
 	{
-		$data['page'] = 'topspots';
+		if ($this->is_login())
+        {
+		$data['page'] = 'modal';
 		$data['title'] = 'HotSpots | TopSpots';
         $this->load->view('header', $data);
         $this->load->view('topspots');
+        }
+        else
+        {
+            redirect(base_url());
+        }
 	}
 
 	protected function is_login()
@@ -44,7 +63,16 @@ class Main extends CI_Controller {
 	
 	function logout()
 	{
+		var_dump($this->session);
+		// if ($this->session->userdata['session']['account']=='facebook')
+		// {
+		// 	$this->load->library('facebook');
+		// 	$this->session->set_userdata('account', 'default');
+		// 	$this->facebook->getLogoutUrl(array("next"=>base_url('main/logout/')));
+		// 	$this->facebook->destroySession();
+		// }
 		$this->session->sess_destroy();
+		session_destroy();
 		redirect(base_url());
 	}
 
@@ -56,14 +84,20 @@ class Main extends CI_Controller {
         {
             $checkins = $this->checkin->get_feed_checkins($this->session->userdata['user_session']['facebookuser_id']);
         }
-
-
         $html='';
 
        	foreach($checkins as $checkin)
        	{
        		if (isset($checkin['website'])) {
        			$website = preg_split('~[ |;]~', $checkin['website'])[0];
+       			if ($website[0]!='h')
+       			{
+       				$website = 'http://'.$website;
+       			}
+       		}
+       		else 
+       		{
+       			$website = "http://www.facebook.com/{$checkin['place_id']}";
        		}
        		$html .=   "<div class='feed_data list-group-item'>
 							<div class='col-lg-3 no-margins'>
@@ -71,7 +105,7 @@ class Main extends CI_Controller {
 							</div>
 							<div class='col-lg-8 col-lg-offset-4 no-margins'>
 								<p class='live_feed'>
-									<a href='www.facebook.com/'{$checkin['author_id']}'><strong>{$checkin['author_name']}</strong></a> 
+									<a href='http://www.facebook.com/{$checkin['author_id']}'><strong>{$checkin['author_name']}</strong></a> 
 									has just checked into 
 									<a href='$website'>{$checkin['place_name']}</a> 
 									via Facebook.
@@ -107,8 +141,51 @@ class Main extends CI_Controller {
        					</div>";
        	return $html;
     }
-    function process_heatmap() {
-    	redirect('heatmap');
+    function get_markers() 
+    {
+    	$this->load->model('checkin');
+        $checkins = NULL;
+        $info = NULL;
+        $array=array();
+        
+        if(isset($this->session->userdata['user_session']['facebookuser_id']))
+        {
+            $checkins = $this->checkin->get_map_checkins();
+        }
+        for($i=0; $i<count($checkins); $i++)
+        {	
+        	if (isset($checkins[$i]['website'])) {
+       			$website = preg_split('~[ |;]~', $checkins[$i]['website'])[0];
+       			if ($website[0]!='h')
+       			{
+       				$website = 'http://'.$website;
+       			}
+       		}
+   			else 
+   			{
+   				$website = "http://www.facebook.com/{$checkins[$i]['id']}";
+   			}
+        	$info = "<div>
+        				<h3 class='text-center'>{$checkins[$i]['place_name']}</h3>
+        				<p>{$checkins[$i]['category']}</p>
+        				<a href='$website'>$website</a>
+        				<p>{$checkins[$i]['city']}, {$checkins[$i]['state']} {$checkins[$i]['country']}</p>
+        				<p>
+	        				<strong>Checkins:</strong> {$checkins[$i]['checkins']}<br/>
+	        				<strong>Were Here:</strong> {$checkins[$i]['were_here_count']}<br/>
+	        				<strong>Talking About:</strong> {$checkins[$i]['talking_about_count']}<br/>
+        				</p>
+        			</div>";
+        	$y = $i +1;
+        	$place_name = addslashes($checkins[$i]['place_name']);
+        	$array[] = [$place_name, $checkins[$i]['latitude'], $checkins[$i]['longitude'], $y, $info];
+        }
+        return json_encode($array);
+    }
+    function process_heatmap() 
+    {
+    	$this->session->set_userdata('address', $this->input->post('address'));
+    	redirect(base_url('heatmap'));
     }
 }
 

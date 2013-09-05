@@ -1,4 +1,3 @@
-<!doctype html>
 <div class="container">
 	<div id="results"></div>
 	<div class="row">

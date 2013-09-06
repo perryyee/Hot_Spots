@@ -17,8 +17,8 @@
     		});
 		});
 		$(document).ready(function(){
-			$('#loading_but').click(function () {
-		        var btn = $(this)
+			$('#fb_form').submit(function(){
+		        var btn = $('#loading_but')
 		        btn.button('loading');
    			});
 		});
@@ -57,7 +57,7 @@
 					<a href="/register">Don't have an account? Register here.</a><br/>
 				</form>
 				<p>OR</p>
-<?php      echo form_open('/users/facebook_request'); ?>					
+<?php      echo form_open('/users/facebook_request', array('id'=> 'fb_form')); ?>					
 					<button type="submit" data-loading-text="Logging In..." class="btn btn-default" id='loading_but'><img class='fb_login' src="/assets/images/facebook.png" alt="Facebook"/>Login with Facebook</button>
 					
 				</form>

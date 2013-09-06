@@ -1,3 +1,4 @@
+<?php //var_dump($this->session->userdata); ?>
 <div class="container">
 	<div id="results"></div>
 	<div class="row">
@@ -44,7 +45,7 @@
 		        <h3 class="modal-title text-center">First Facebook Login</h3>
 		    </div>
         	<div class="modal2-body modal_info">
-        		<input id='first_login' type="hidden" name='first_time' value= <?= $this->session->userdata['user_session']['first_time']; ?> >
+        		<input id='first_login' type="hidden" name='first_time' value= <?= $this->session->userdata['first_time']; ?> >
         		<img src="/assets/images/facebook.png" alt="Facebook" class="pull-left fb_logo">
 	        	<p>We noticed this is your first time logging in with Facebook. We encourage you to discover your friends' checkins.</p>
 <?php  

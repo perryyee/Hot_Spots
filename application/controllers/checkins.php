@@ -9,7 +9,7 @@ class Checkins extends Main {
     }
     function add_checkins() {
         $this->load->library('fbconnect');
-        $this->session->set_userdata('completion', TRUE);
+        $this->session->set_userdata('first_time', FALSE);
         $this->load->model('checkin');
         
         $checkins = $this->checkin->retrieve_checkin_ids($this->session->userdata['user_session']['facebookuser_id']);

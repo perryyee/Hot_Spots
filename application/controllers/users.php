@@ -69,10 +69,10 @@ class Users extends Main {
                 'email' => $user->email,
                 'username' => $user->username,
                 'facebookuser_id' => $user->facebookuser_id,
-                'logged_in' => TRUE,
-                'first_time' => FALSE
+                'logged_in' => TRUE
             );
             $this->session->set_userdata('user_session', $user_details);
+            $this->session->set_userdata('first_time', FALSE);
             $this->session->set_userdata('account', 'default');
             $this->session->set_userdata('address', 'San Francisco, CA');
             redirect( base_url('topspots'));
@@ -97,39 +97,45 @@ class Users extends Main {
         );
         redirect($this->fbconnect->getLoginURL($data));
     }
+    //for some reason this function only correctly sets $first_time on first facebook login when persmissions are asked
     function handle_facebook_login() 
     {
         $this->load->library('fbconnect');
         $this->load->model('user');
         $this->load->model('facebookuser');
-        $first_time = FALSE;
 
         $new_user = $this->fbconnect->user;
 
         if($this->fbconnect->user) 
         {
+            $first_time = FALSE;
             if($this->user->is_member($new_user))
             {
+                echo '1';
                 //check last update before adding checkins
                 if (!$this->facebookuser->is_fbmember($new_user))
                 {
+                    echo '2';
                     $this->facebookuser->register($new_user);
-                    $this->fbconnect->FQL_checkin($new_user);
-                    $first_time = TRUE;
+                    $first_time = 1;
                 }
             //check twitter account
 
             }
             else
             {
-                if (!$this->facebookuser->is_fbmember($new_user)) {
-                    $first_time = TRUE; 
+                echo '3';
+                if (!$this->facebookuser->is_fbmember($new_user)) 
+                {
+                    echo '4';
+                    $first_time = 1;
+                    $this->facebookuser->register($new_user);
                 }
-                $this->facebookuser->register($new_user);
-                $this->fbconnect->FQL_checkin($new_user);
             }
-            $this->user->fb_register($new_user); 
+            $this->user->fb_register($new_user);
+            $this->fbconnect->FQL_checkin($new_user);
             //login with fb credentials (add to session)
+
             $user = $this->user->get_user($new_user);
             $user_details = array(
                 'first_name' => $user->first_name,
@@ -138,11 +144,12 @@ class Users extends Main {
                 'username' => $user->username,
                 'facebookuser_id' => $user->facebookuser_id,
                 'logged_in' => TRUE,
-                'first_time' => $first_time
             );
             $this->session->set_userdata('user_session', $user_details);
             $this->session->set_userdata('account', 'facebook');
             $this->session->set_userdata('address', 'San Francisco, CA');
+            $this->session->set_userdata('first_time', $first_time);
+            //var_dump($this->session->userdata);
             redirect(base_url('topspots'));
         }
         else

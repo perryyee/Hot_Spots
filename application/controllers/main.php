@@ -20,17 +20,19 @@ class Main extends CI_Controller {
 	{	
 		if ($this->is_login())
         {
-		$checkins = $this->get_feed_data();
-		$markers = $this->get_markers();
+			$checkins = $this->get_feed_data();
+			$markers = $this->get_markers();
+			$heat_points = $this->get_points();
 
-		$data = array(
-			'feed' => $checkins,
-			'markers' => $markers,
-			'page' => 'heatmap',
-			'title' => 'HotSpots | Heatmap'
-		);
-        $this->load->view('header', $data);
-        $this->load->view('heatmap');
+			$data = array(
+				'feed' => $checkins,
+				'markers' => $markers,
+				'heat_points' => $heat_points,
+				'page' => 'heatmap',
+				'title' => 'HotSpots | Heatmap'
+			);
+	        $this->load->view('header', $data);
+	        $this->load->view('heatmap');
     	}
         else
         {
@@ -42,10 +44,10 @@ class Main extends CI_Controller {
 	{
 		if ($this->is_login())
         {
-		$data['page'] = 'modal';
-		$data['title'] = 'HotSpots | TopSpots';
-        $this->load->view('header', $data);
-        $this->load->view('topspots');
+			$data['page'] = 'modal';
+			$data['title'] = 'HotSpots | TopSpots';
+	        $this->load->view('header', $data);
+	        $this->load->view('topspots');
         }
         else
         {
@@ -63,14 +65,6 @@ class Main extends CI_Controller {
 	
 	function logout()
 	{
-		var_dump($this->session);
-		// if ($this->session->userdata['session']['account']=='facebook')
-		// {
-		// 	$this->load->library('facebook');
-		// 	$this->session->set_userdata('account', 'default');
-		// 	$this->facebook->getLogoutUrl(array("next"=>base_url('main/logout/')));
-		// 	$this->facebook->destroySession();
-		// }
 		$this->session->sess_destroy();
 		session_destroy();
 		redirect(base_url());
@@ -182,6 +176,24 @@ class Main extends CI_Controller {
         }
         return json_encode($array);
     }
+
+    function get_points() 
+    {
+    	$this->load->model('checkin');
+    	$points = array();
+        $checkins = NULL;
+        
+        if(isset($this->session->userdata['user_session']['facebookuser_id']))
+        {
+            $checkins = $this->checkin->get_map_checkins();
+        }
+        foreach($checkins as $checkin)
+        {	
+        	$points[] = "new google.maps.LatLng({$checkin['latitude']}, {$checkin['longitude']})";
+        }
+        return json_encode($points);
+    }
+
     function process_heatmap() 
     {
     	$this->session->set_userdata('address', $this->input->post('address'));

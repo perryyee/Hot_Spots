@@ -21,8 +21,11 @@ class Facebookuser extends DataMapper {
     }
 
     function is_fbmember($facebook_user) {
-        $this->where('id', $facebook_user['id'])->get();
-        if ($this->id)
+        $sql = "SELECT * FROM facebookusers WHERE id = {$facebook_user['id']}";
+        $user = $this->db->query($sql)->result_array();
+        // $user = $this->where('id', $facebook_user['id'] )->get();
+        
+        if (isset($user[0]))
         {
             return true;
         }

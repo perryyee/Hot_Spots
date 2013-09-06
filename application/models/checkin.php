@@ -11,9 +11,18 @@ class Checkin extends DataMapper {
     }
     function save_checkins($id, $checkins)
     {
+        $fb_checkin = new facebookusers_checkin();
         foreach ($checkins as $checkin) {
-            $sql = "INSERT INTO checkins (id, facebookuser_id, author_id, latitude, longitude, created_at) VALUES ('{$checkin['checkin_id']}', $id, '{$checkin['author_uid']}', {$checkin['coords']['latitude']}, {$checkin['coords']['longitude']}, {$checkin['timestamp']})";
-            $this->db->query($sql);
+            if (!$this->get_checkin($checkin['checkin_id']))
+            { 
+                $sql = "INSERT INTO checkins (id, author_id, latitude, longitude, created_at) VALUES ('{$checkin['checkin_id']}', '{$checkin['author_uid']}', {$checkin['coords']['latitude']}, {$checkin['coords']['longitude']}, {$checkin['timestamp']})";
+                $this->db->query($sql);
+            }
+                if(!$fb_checkin->get_fb_checkin($id, $checkin['checkin_id']))
+                {
+                    $sql = "INSERT INTO facebookusers_checkins (facebookuser_id, checkin_id) VALUES ($id, '{$checkin['checkin_id']}')";
+                    $this->db->query($sql);    
+                }
         }
     }
     function add_checkins($checkins)
@@ -29,7 +38,7 @@ class Checkin extends DataMapper {
         foreach ($checkins as $checkin) 
         {
             $message = NULL;
-            $place_id = $facebook->api("/{$checkin['id']}");
+            $place_id = $facebook->api("/{$checkin['checkin_id']}");
 
             if(isset($place_id['message']))
             {
@@ -41,23 +50,33 @@ class Checkin extends DataMapper {
                 $place_obj->add_place($place);
             }
             $sql = "UPDATE checkins SET place_id=?, place_name=?, author_name=?, message=? WHERE id=?";
-            $this->db->query($sql, array($place_id['place']['id'], $place_id['place']['name'], $place_id['from']['name'],  $message, $checkin['id']));
+            $this->db->query($sql, array($place_id['place']['id'], $place_id['place']['name'], $place_id['from']['name'],  $message, $checkin['checkin_id']));
             
         }
         return $places;
     }
     //make a general get_checkins($selects) function
     function retrieve_checkin_ids($id) {
-        $sql = "SELECT id FROM checkins WHERE facebookuser_id = $id";
+        $sql = "SELECT checkin_id FROM facebookusers_checkins WHERE facebookuser_id = $id";
         $checkins = $this->db->query($sql)->result_array();
         return $checkins;
+    }
+    function get_checkin($id) {
+        $checkin = $this->where('id', $id)->get();
+        if ($checkin->id)
+        {
+            return TRUE;
+        }
+        else
+        {
+            return FALSE;
+        }
     }
     function get_feed_checkins($id) {
         $sql = "SELECT place_name, place_id, website, author_id, author_name, message, latitude, longitude, (UNIX_TIMESTAMP(NOW())-checkins.created_at) as time_diff FROM checkins
             LEFT JOIN places on place_id = places.id
-            WHERE facebookuser_id = $id
-            ORDER BY checkins.created_at DESC
-            LIMIT 10";    
+            LEFT JOIN facebookusers_checkins on checkins.id = facebookusers_checkins.checkin_id
+            WHERE facebookuser_id = $id ORDER BY checkins.created_at DESC LIMIT 10";    
         return $this->db->query($sql)->result_array();
     }
     function get_map_checkins() {

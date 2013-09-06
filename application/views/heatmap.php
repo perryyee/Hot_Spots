@@ -12,7 +12,48 @@
 		</div>
 	</div>
 	<div class="col-lg-10 col-lg-offset-2 no-margins" id="map-container">
-		<div id="map-canvas">
+		<div id="map-canvas"></div>
+		<div class="well controller map_controller">
+			<span class='on_label pull-left'>HeatMap: </span>
+			<div class="onoffswitch">
+	    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" onclick="toggleHeatmap()">
+	    		<label class="onoffswitch-label" for="myonoffswitch">
+		        	<div class="onoffswitch-inner"></div>
+		       		<div class="onoffswitch-switch"></div>
+	    		</label>
+			</div>
+			<span class='on_label pull-left'>Friends: </span>
+			<div class="onoffswitch">
+	    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch2" onclick="toggleHeatmap()" checked>
+	    		<label class="onoffswitch-label" for="myonoffswitch2">
+		        	<div class="onoffswitch-inner"></div>
+		       		<div class="onoffswitch-switch"></div>
+	    		</label>
+			</div>
+			<span class='on_label pull-left'>Facebook: </span>
+			<div class="onoffswitch">
+	    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch3" onclick="toggleHeatmap()" checked>
+	    		<label class="onoffswitch-label" for="myonoffswitch3">
+		        	<div class="onoffswitch-inner"></div>
+		       		<div class="onoffswitch-switch"></div>
+	    		</label>
+			</div>
+			<span class='on_label pull-left'>Twitter: </span>
+			<div class="onoffswitch">
+	    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch4" onclick="toggleHeatmap()">
+	    		<label class="onoffswitch-label" for="myonoffswitch4">
+		        	<div class="onoffswitch-inner"></div>
+		       		<div class="onoffswitch-switch"></div>
+	    		</label>
+			</div>
+			<span class='on_label pull-left'>Instagram: </span>
+			<div class="onoffswitch">
+	    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch5" onclick="toggleHeatmap()">
+	    		<label class="onoffswitch-label" for="myonoffswitch5">
+		        	<div class="onoffswitch-inner"></div>
+		       		<div class="onoffswitch-switch"></div>
+	    		</label>
+			</div>
 		</div>
 	</div>		
 </div>

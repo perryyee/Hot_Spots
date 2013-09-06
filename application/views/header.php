@@ -7,9 +7,9 @@
 <head>
 	<meta charset="UTF-8">
 	<title><?= $title; ?></title>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+	 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+	 <script type="text/javascript" src="/assets/js/bootstrap.js"></script>
 <?php
 	if(isset($page))
 	{
@@ -58,7 +58,7 @@
 						function(data) {
 							if(data.outcome=='Success')
 							{
-		        				$('#info').parent().html('<br/><p>Thank you for your patience. Synchronization to Facebook has completed, enjoy!</p><button type="button" data-dismiss="modal" class="btn btn-danger">Close</button>');
+								$('#info').parent().html('<br/><p>Thank you for your patience. Synchronization to Facebook has completed, enjoy!</p><a href="/heatmap"><button type="button" class="btn btn-primary">Explore!</button></a> <button type="button" data-dismiss="modal" class="btn btn-danger">Close</button>');
 							}
 						},
 						"json"
@@ -77,9 +77,7 @@
 		else if ($page == 'heatmap')
 		{
 ?>
-	    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-		<!--<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2BJLwf7VA7ZTLyZQlGkA-FL6bBKOeFdA&sensor=true"></script>-->
-		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2BJLwf7VA7ZTLyZQlGkA-FL6bBKOeFdA&libraries=visualization&sensor=true"></script>
 		<script>
 			(document).onkeypress = function keypressed(e){
 			  	if (e.keyCode == 13) {
@@ -88,8 +86,7 @@
 			}
 		</script>
 		<script>
-			var geocoder;
-			var map;
+			var map, pointarray, heatmap, geocoder;
 			google.maps.visualRefresh = true;
 			
 			function initialize() {
@@ -106,7 +103,20 @@
 			  	map = new google.maps.Map(document.getElementById('map-canvas'),
 			    	mapOptions);
 
+			  	var pointArray = new google.maps.MVCArray(heat_data);
+			  	heatmap = new google.maps.visualization.HeatmapLayer({
+   					data: pointArray,
+   					radius: 30
+   				});
+
+   				heatmap.setMap(map);
+   				toggleHeatmap();
+
 			  	setMarkers(map, checkins);
+			}
+
+			function toggleHeatmap() {
+				heatmap.setMap(heatmap.getMap() ? null : map);
 			}
 
 			function codeAddress() {
@@ -127,8 +137,13 @@
 			* the order in which these markers should display on top of each
 			* other.
 			*/
-			var checkins = <?php echo $markers; ?>;
-				
+			var checkins = <?= $markers; ?>;
+			var heat_data = [];
+			// var heat_data = <?= $heat_points; ?>;
+			for(var i=0; i<checkins.length; i++)
+			{
+				heat_data.push({location: new google.maps.LatLng(checkins[i][1], checkins[i][2]), weight: 1})
+			}
 				// format of array
 				// [ ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
 				//   ['Maroubra Beach', -33.950198, 151.259302, 1] ];
@@ -195,17 +210,20 @@
 			  	}
 			}
 			//initializes the map
-			//window.onload = codeAddress;
 			google.maps.event.addDomListener(window, 'load', initialize);
 			
 			//Dynanimcally changes the size of the screen
 			$(function(){
 	    		$('.feed').css({'height':(($(window).height())-40)+'px'});
 	    		$('#map-container').css({'height':(($(window).height())-40)+'px'});
+	    		var width = $('#map-container').css('width');
+	    		$('.map_controller').css({'left':((parseInt(width)-650)/2)+'px'});
 
 	    		$(window).resize(function(){
-	          		$('.feed').css({'height':(($(window).height())-40)+'px'});
-	          		$('#map-container').css({'height':(($(window).height())-40)+'px'});
+	          		$('.feed').css({'height':(($(window).height())-40+'px')});
+	          		$('#map-container').css({'height':(($(window).height())-40+'px')});
+	          		var width = $('#map-container').css('width');
+	    			$('.map_controller').css({'left':((parseInt(width)-650)/2)+'px'});
 	    		});
 			});
 		</script>

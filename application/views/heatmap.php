@@ -24,7 +24,7 @@
 			</div>
 			<span class='on_label pull-left'>Friends: </span>
 			<div class="onoffswitch">
-	    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch2" onclick="toggleHeatmap()" checked>
+	    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch2" onclick="" checked>
 	    		<label class="onoffswitch-label" for="myonoffswitch2">
 		        	<div class="onoffswitch-inner"></div>
 		       		<div class="onoffswitch-switch"></div>
@@ -32,7 +32,7 @@
 			</div>
 			<span class='on_label pull-left'>Facebook: </span>
 			<div class="onoffswitch">
-	    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch3" onclick="toggleHeatmap()" checked>
+	    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch3" onclick="fb_mgr.toggle()" checked>
 	    		<label class="onoffswitch-label" for="myonoffswitch3">
 		        	<div class="onoffswitch-inner"></div>
 		       		<div class="onoffswitch-switch"></div>
@@ -40,7 +40,7 @@
 			</div>
 			<span class='on_label pull-left'>Twitter: </span>
 			<div class="onoffswitch">
-	    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch4" onclick="toggleHeatmap()">
+	    		<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch4" onclick="">
 	    		<label class="onoffswitch-label" for="myonoffswitch4">
 		        	<div class="onoffswitch-inner"></div>
 		       		<div class="onoffswitch-switch"></div>

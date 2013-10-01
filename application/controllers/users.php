@@ -93,7 +93,7 @@ class Users extends Main {
         $this->load->library('fbconnect');
         $data = array(
             'redirect_uri' => site_url('users/handle_facebook_login'),
-            'scope' => 'email, friends_checkins'
+            'scope' => 'email, friends_status'
         );
         redirect($this->fbconnect->getLoginURL($data));
     }

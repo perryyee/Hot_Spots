@@ -39,18 +39,32 @@ class Checkin extends DataMapper {
         {
             $message = NULL;
             $place_id = $facebook->api("/{$checkin['checkin_id']}");
-
+            
             if(isset($place_id['message']))
             {
                 $message = $place_id['message'];
             }
             if (!$place_obj->get_place($place_id['id']))
             {
-                $place = $facebook->api("/{$place_id['place']['id']}?fields=name,category,checkins,location,talking_about_count,website,id,were_here_count");
-                $place_obj->add_place($place);
+                if (!isset($place_id['place']['start_time']))
+                {
+                    $place = $facebook->api("/{$place_id['place']['id']}?fields=name,category,checkins,location,talking_about_count,website,id,were_here_count");
+                    $place_obj->add_place($place);
+                    $place_name = $place_id['place']['name'];
+                    $place_author = $place_id['from']['name'];
+                }
+                else
+                {
+                    $place_name = $place_id['place']['location'];
+                    $place_author = $place_id['from']['name'];
+
+                    $place = $facebook->api("/{$place_id['place']['id']}");
+                    $place = $facebook->api("/{$place['venue']['id']}?fields=name,category,checkins,location,talking_about_count,website,id,were_here_count");
+                    $place_obj->add_place($place);
+                }
             }
             $sql = "UPDATE checkins SET place_id=?, place_name=?, author_name=?, message=? WHERE id=?";
-            $this->db->query($sql, array($place_id['place']['id'], $place_id['place']['name'], $place_id['from']['name'],  $message, $checkin['checkin_id']));
+            $this->db->query($sql, array($place['id'],  $place_name, $place_author,  $message, $checkin['checkin_id']));
             
         }
         return $places;

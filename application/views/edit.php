@@ -69,7 +69,7 @@
         <div class="modal2-content">
         	<div class="modal-header">
 		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        <h3 class="modal-title text-center">Facebook Checkin Update</h3>
+		        <h2 class="modal-title text-center">FB Checkin Update</h2>
 		    </div>
         	<div class="modal2-body modal_info">
         		<img src="/assets/images/facebook.png" alt="Facebook" class="pull-left fb_logo">

@@ -38,6 +38,9 @@ class Checkin extends DataMapper {
         foreach ($checkins as $checkin) 
         {
             $message = NULL;
+            echo "1";
+            echo $checkin['checkin_id'];
+            echo "separator";
             $place_id = $facebook->api("/{$checkin['checkin_id']}");
             
             if(isset($place_id['message']))
@@ -48,6 +51,9 @@ class Checkin extends DataMapper {
             {
                 if (!isset($place_id['place']['start_time']))
                 {
+                    echo "2";
+                    echo $place_id['place']['id'];
+                    echo "<br/><br/>";
                     $place = $facebook->api("/{$place_id['place']['id']}?fields=name,category,checkins,location,talking_about_count,website,id,were_here_count");
                     $place_obj->add_place($place);
                     $place_name = $place_id['place']['name'];
@@ -55,6 +61,9 @@ class Checkin extends DataMapper {
                 }
                 else
                 {
+                    echo "3";
+                    echo $place_id['place']['id'];
+                    echo "<br/><br/>";
                     $place_name = $place_id['place']['location'];
                     $place_author = $place_id['from']['name'];
 
@@ -71,7 +80,8 @@ class Checkin extends DataMapper {
     }
     //make a general get_checkins($selects) function
     function retrieve_checkin_ids($id) {
-        $sql = "SELECT checkin_id FROM facebookusers_checkins WHERE facebookuser_id = $id";
+        //$sql = "SELECT checkin_id FROM facebookusers_checkins WHERE facebookuser_id = $id";
+        $sql = "SELECT checkin_id FROM facebookusers_checkins LEFT JOIN checkins on checkin_id = checkins.id WHERE facebookuser_id = $id AND place_id IS NULL";
         $checkins = $this->db->query($sql)->result_array();
         return $checkins;
     }

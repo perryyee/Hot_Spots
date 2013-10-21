@@ -4,16 +4,23 @@ require_once("main.php");
 
 class Users extends Main {
 
+    //Redirects to Login view
     function index() {
         $this->login();
     }
+
+    //Loads the Login View
     function login() {
         $this->load->view('login');
     }
+
+    //Loads the Register View
     function register() 
     {
         $this->load->view('register');
     }
+
+    //Loads the Edit view
     function edit() 
     {
         if ($this->is_login())
@@ -28,6 +35,8 @@ class Users extends Main {
             redirect(base_url());
         }
     }
+
+    //Proceses user registration, and returns success or error message
     function process_register()
     {
         $user_details = array(
@@ -52,6 +61,8 @@ class Users extends Main {
             redirect(base_url('register'));
         }
     }
+
+    //Proccess on-site user login, sets user session
     function process_login()
     {
         $user_details = array(
@@ -84,10 +95,14 @@ class Users extends Main {
         }
 
     }
+
+    //Handles update of user account information
     function process_edit() 
     {
 
     }
+
+    //Requests and redirects to facebook for user login
     function facebook_request() 
     {
         $this->load->library('fbconnect');
@@ -97,6 +112,8 @@ class Users extends Main {
         );
         redirect($this->fbconnect->getLoginURL($data));
     }
+
+    //Processes integration of facebook login
     //for some reason this function only correctly sets $first_time on first facebook login when persmissions are asked
     function handle_facebook_login() 
     {

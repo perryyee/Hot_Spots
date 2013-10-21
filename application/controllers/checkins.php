@@ -7,6 +7,8 @@ class Checkins extends Main {
     function index() {
         redirect(base_url('/topspots'));
     }
+
+    //Handles checkin retrieval through facebook upon facebook login
     function add_checkins() {
         $this->load->library('fbconnect');
         $this->session->set_userdata('first_time', FALSE);

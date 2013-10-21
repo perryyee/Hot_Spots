@@ -10,6 +10,8 @@ class Place extends DataMapper {
     {
         parent::__construct($id);
     }
+
+    //Adds Facebook Place data into database
     function add_place($place)
     {   
         $place_website = NULL;
@@ -57,9 +59,13 @@ class Place extends DataMapper {
             $this->db->query($sql, array($place['id'], $location_street,$location_city, $location_state, $location_country, $location_zip, $place['location']['latitude'], $place['location']['longitude']));
         }
     }
+
+    //Queries Facebook for all of the Places
     function retrieve_places($facebook_user) {
 
     }
+
+    //Checks if specific Place exists in the database by Place ID
     function get_place($place_id) {
         $user = $this->where('id', $place_id)->get();
         if ($user->id)

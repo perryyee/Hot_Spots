@@ -34,6 +34,8 @@ class Fbconnect extends Facebook{
 			}
 		}
 	}
+
+	//Queries Facebook FQL for friends' checkins
 	function FQL_checkin($facebook_user) 
 	{
 		$ci =& get_instance();

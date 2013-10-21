@@ -27,6 +27,7 @@
 					$('#update_fb').modal();
 				});
 				
+				//Facebook Checkin AJAX function
 				$('#fb_form').submit(function(){
 					$(this).parent().html('<p>Please Wait...</p><div id="info"></div><br/><br/><br/><p>This make take a few moments.</p>');
 					var new_html = '';
@@ -86,8 +87,6 @@
 			      	codeAddress();
 			  	}      
 			}
-		</script>
-		<script>
 			
 			var mcStyles = [{
 		        url: '/assets/images/logo_pin1.png',

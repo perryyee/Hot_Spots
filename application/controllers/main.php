@@ -11,15 +11,17 @@ class Main extends CI_Controller {
 		$this->user_session = $this->session->userdata('user_session');
 	}
 
+	//loads the default view
 	function index()
 	{	
 		$this->load->view('login');
 	}
 
+	//handles logic for the heatmap view, formats data into arrays to handle with google maps
 	function heatmap() 
 	{	
 		if ($this->is_login())
-				{
+		{
 			$checkins = $this->get_feed_data();
 			$markers = $this->get_markers();
 			$heat_points = $this->get_points();
@@ -31,15 +33,18 @@ class Main extends CI_Controller {
 				'page' => 'heatmap',
 				'title' => 'HotSpots | Heatmap'
 			);
-					$this->load->view('header', $data);
-					$this->load->view('heatmap');
-			}
-				else
-				{
-						redirect(base_url());
-				}
+			
+			$this->load->view('header', $data);
+			$this->load->view('heatmap');
+
+		}
+		else
+		{
+				redirect(base_url());
+		}
 	}
 
+	//handles view of TopSpots landing page after login
 	function topspots() 
 	{
 		if ($this->is_login())
@@ -55,6 +60,7 @@ class Main extends CI_Controller {
 				}
 	}
 
+	//function to check if user is logged in
 	protected function is_login()
 	{
 		if(isset($this->user_session['logged_in']))
@@ -63,6 +69,7 @@ class Main extends CI_Controller {
 			return FALSE;
 	}
 	
+	//user logout function
 	function logout()
 	{
 		$this->session->sess_destroy();
@@ -70,140 +77,146 @@ class Main extends CI_Controller {
 		redirect(base_url());
 	}
 
+	//Function to get feed data(Facebook checkins for now) from checkin model, and return data html format for display
 	function get_feed_data()
+	{
+		$this->load->model('checkin');
+		$checkins = NULL;
+		if(isset($this->session->userdata['user_session']['facebookuser_id']))
 		{
-				$this->load->model('checkin');
-				$checkins = NULL;
-				if(isset($this->session->userdata['user_session']['facebookuser_id']))
-				{
-						$checkins = $this->checkin->get_feed_checkins($this->session->userdata['user_session']['facebookuser_id']);
-				}
-				$html='';
+				$checkins = $this->checkin->get_feed_checkins($this->session->userdata['user_session']['facebookuser_id']);
+		}
+		$html='';
 
-				foreach($checkins as $checkin)
-				{
-					if (isset($checkin['website'])) {
-						$website = preg_split('~[ |;]~', $checkin['website'])[0];
-						if ($website[0]!='h')
-						{
-							$website = 'http://'.$website;
-						}
-					}
-					else 
-					{
-						$website = "http://www.facebook.com/{$checkin['place_id']}";
-					}
-					if (isset($checkin['author_name']))
-					{
-						$html.="<div class='feed_data list-group-item'>
-									<div class='col-lg-3 no-margins'>
-										<img class='thumb' src='/assets/images/facebook.png' alt='FB'>
-									</div>
-									<div class='col-lg-8 col-lg-offset-4 no-margins'>
-										<p class='live_feed'>
-											<a href='http://www.facebook.com/{$checkin['author_id']}'><strong>{$checkin['author_name']}</strong></a> 
-											has just checked into 
-											<a href='$website'>{$checkin['place_name']}</a> 
-											via Facebook.
-										</p>";
-					
-						if ($checkin['time_diff']>518400) 
-						{
-							$html .= '	<span class="duration">1 week ago.</span>';
-						}
-						else if(floor($checkin['time_diff']/86400)>=1)
-						{
-							$diff = floor($checkin["time_diff"]/86400);
-							$html .= '	<span class="duration">'.$diff.' day(s) ago.</span>';
-						}
-						else if(floor($checkin['time_diff']/3600)>=1)
-						{
-							$diff = floor($checkin["time_diff"]/3600);
-							$html .= '	<span class="duration">'.$diff.' hour(s) ago.</span>';
-						}
-						else if(floor($checkin['time_diff']/60)>=1)
-						{
-							$diff = floor($checkin["time_diff"]/60);
-							$html .= '	<span class="duration">'.$diff.' minute(s) ago.</span>';
-						}
-						else
-						{
-						 $html .= '		<span class="duration">'.$checkin["time_diff"].' second(s) ago.</span>';
-						}
-						$html.="	</div>
-								</div>";
-							}
-						}
-					$html.="	<div class='feed_data list-group-item'>
-									<a href='javascript:;'><h4 class='text-center'>See All Activity...</h4></a>
-								</div>";
-					
-				return $html;
-		}
-		function get_markers() 
+		foreach($checkins as $checkin)
 		{
-			$this->load->model('checkin');
-				$checkins = NULL;
-				$info = NULL;
-				$array=array();
-				
-				if(isset($this->session->userdata['user_session']['facebookuser_id']))
+			if (isset($checkin['website'])) {
+				$website = preg_split('~[ |;]~', $checkin['website'])[0];
+				if ($website[0]!='h')
 				{
-						$checkins = $this->checkin->get_map_checkins();
+					$website = 'http://'.$website;
 				}
-				for($i=0; $i<count($checkins); $i++)
-				{	
-					if (isset($checkins[$i]['website'])) {
-						$website = preg_split('~[ |;]~', $checkins[$i]['website'])[0];
-						if ($website[0]!='h')
-						{
-							$website = 'http://'.$website;
-						}
+			}
+			else 
+			{
+				$website = "http://www.facebook.com/{$checkin['place_id']}";
+			}
+			
+			if (isset($checkin['author_name']))
+			{
+				$html.="<div class='feed_data list-group-item'>
+							<div class='col-lg-3 no-margins'>
+								<img class='thumb' src='/assets/images/facebook.png' alt='FB'>
+							</div>
+							<div class='col-lg-8 col-lg-offset-4 no-margins'>
+								<p class='live_feed'>
+									<a href='http://www.facebook.com/{$checkin['author_id']}'><strong>{$checkin['author_name']}</strong></a> 
+									has just checked into 
+									<a href='$website'>{$checkin['place_name']}</a> 
+									via Facebook.
+								</p>";
+			
+				if ($checkin['time_diff']>518400) 
+				{
+					$html .= '	<span class="duration">1 week ago.</span>';
+				}
+				else if(floor($checkin['time_diff']/86400)>=1)
+				{
+					$diff = floor($checkin["time_diff"]/86400);
+					$html .= '	<span class="duration">'.$diff.' day(s) ago.</span>';
+				}
+				else if(floor($checkin['time_diff']/3600)>=1)
+				{
+					$diff = floor($checkin["time_diff"]/3600);
+					$html .= '	<span class="duration">'.$diff.' hour(s) ago.</span>';
+				}
+				else if(floor($checkin['time_diff']/60)>=1)
+				{
+					$diff = floor($checkin["time_diff"]/60);
+					$html .= '	<span class="duration">'.$diff.' minute(s) ago.</span>';
+				}
+				else
+				{
+				 $html .= '		<span class="duration">'.$checkin["time_diff"].' second(s) ago.</span>';
+				}
+				$html.="	</div>
+						</div>";
 					}
-				else 
-				{
-					$website = "http://www.facebook.com/{$checkins[$i]['id']}";
 				}
-					$info = "<div>
-								<h3 class='text-center'>{$checkins[$i]['place_name']}</h3>
-								<p>{$checkins[$i]['category']}</p>
-								<a href='$website'>$website</a>
-								<p>{$checkins[$i]['city']}, {$checkins[$i]['state']} {$checkins[$i]['country']}</p>
-								<p>
-									<strong>Checkins:</strong> {$checkins[$i]['checkins']}<br/>
-									<strong>Were Here:</strong> {$checkins[$i]['were_here_count']}<br/>
-									<strong>Talking About:</strong> {$checkins[$i]['talking_about_count']}<br/>
-								</p>
-							</div>";
-					$y = $i +1;
-					$place_name = addslashes($checkins[$i]['place_name']);
-					$array[] = [$place_name, $checkins[$i]['latitude'], $checkins[$i]['longitude'], $y, $info];
-				}
-				return json_encode($array);
-		}
+			$html.="	<div class='feed_data list-group-item'>
+							<a href='javascript:;'><h4 class='text-center'>See All Activity...</h4></a>
+						</div>";
+			
+		return $html;
+	}
 
-		function get_points() 
+	//Function to retrieve data for specific checkins and pass json array for use with Google Maps API javsscript
+	function get_markers() 
+	{
+		$this->load->model('checkin');
+		$checkins = NULL;
+		$info = NULL;
+		$array=array();
+		
+		if(isset($this->session->userdata['user_session']['facebookuser_id']))
 		{
-			$this->load->model('checkin');
-			$points = array();
-				$checkins = NULL;
-				
-				if(isset($this->session->userdata['user_session']['facebookuser_id']))
+				$checkins = $this->checkin->get_map_checkins();
+		}
+		for($i=0; $i<count($checkins); $i++)
+		{	
+			if (isset($checkins[$i]['website'])) {
+				$website = preg_split('~[ |;]~', $checkins[$i]['website'])[0];
+				if ($website[0]!='h')
 				{
-						$checkins = $this->checkin->get_map_checkins();
+					$website = 'http://'.$website;
 				}
-				foreach($checkins as $checkin)
-				{	
-					$points[] = "new google.maps.LatLng({$checkin['latitude']}, {$checkin['longitude']})";
-				}
-				return json_encode($points);
-		}
-
-		function process_heatmap() 
+			}
+		else 
 		{
-			$this->session->set_userdata('address', $this->input->post('address'));
-			redirect(base_url('heatmap'));
+			$website = "http://www.facebook.com/{$checkins[$i]['id']}";
 		}
+			$info = "<div>
+						<h3 class='text-center'>{$checkins[$i]['place_name']}</h3>
+						<p>{$checkins[$i]['category']}</p>
+						<a href='$website'>$website</a>
+						<p>{$checkins[$i]['city']}, {$checkins[$i]['state']} {$checkins[$i]['country']}</p>
+						<p>
+							<strong>Checkins:</strong> {$checkins[$i]['checkins']}<br/>
+							<strong>Were Here:</strong> {$checkins[$i]['were_here_count']}<br/>
+							<strong>Talking About:</strong> {$checkins[$i]['talking_about_count']}<br/>
+						</p>
+					</div>";
+			$y = $i +1;
+			$place_name = addslashes($checkins[$i]['place_name']);
+			$array[] = [$place_name, $checkins[$i]['latitude'], $checkins[$i]['longitude'], $y, $info];
+		}
+		return json_encode($array);
+	}
+		
+	//Function to get coordinates of each checkin
+	function get_points() 
+	{
+		$this->load->model('checkin');
+		$points = array();
+			$checkins = NULL;
+			
+			if(isset($this->session->userdata['user_session']['facebookuser_id']))
+			{
+					$checkins = $this->checkin->get_map_checkins();
+			}
+			foreach($checkins as $checkin)
+			{	
+				$points[] = "new google.maps.LatLng({$checkin['latitude']}, {$checkin['longitude']})";
+			}
+			return json_encode($points);
+	}
+
+	//Function to pass text input to the next view
+	function process_heatmap() 
+	{
+		$this->session->set_userdata('address', $this->input->post('address'));
+		redirect(base_url('heatmap'));
+	}
 }
 
 /* end of file */

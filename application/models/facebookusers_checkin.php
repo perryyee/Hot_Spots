@@ -9,6 +9,8 @@ class Facebookusers_checkin extends DataMapper {
     {
         parent::__construct($id);
     }
+
+    //Queries database for all of the checkins associated with the user by facebook user Id and checkin ID
     function get_fb_checkin($fb_id, $checkin_id ) {
         //$sql = "SELECT * FROM Facebookusers_checkins WHERE facebookuser_id=$fb_id AND checkin_id = $checkin_id";
         $this->where('facebookuser_id', $fb_id);

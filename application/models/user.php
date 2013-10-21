@@ -37,6 +37,7 @@ class User extends DataMapper {
         )
     );
 
+    //Handles site login authentication
     function login($user_details)
     {
         $user = new User();
@@ -57,6 +58,8 @@ class User extends DataMapper {
             return $user;
         }
     }
+
+    //Saves the user the database
     function register($user_details)
     {
         foreach($user_details as $key => $value)
@@ -73,12 +76,18 @@ class User extends DataMapper {
             return $this->error->string;
         }
     }
+
+    //Updates user information
     function edit() {
 
     }
+
+    //Gets the specific user by the user email
     function get_user($user) {
         return $this->where('email', $user['email'])->get();
     }
+
+    //Checks if the user is already a member of the users table by email address
     function is_member($facebook_user)
     {
         $sql = "SELECT * FROM users WHERE email = '{$facebook_user['email']}'";
@@ -94,6 +103,8 @@ class User extends DataMapper {
             return false;
         }
     }
+
+    //Handles the resgistration of the user through facebook, populating the facebookuser table and users table
     function fb_register($user)
     {
         if (!$this->is_member($user))
@@ -111,15 +122,19 @@ class User extends DataMapper {
         }
     }
 
+    //Handles the registration of the user through twitter
     // function twitter_register($user)
     // {   
 
     // }
+
+    //Handles the registration of the user through instagram
     // function instagram_register($user)
     // {   
 
     // }
 
+    //Handles password encryption by creating salt
     function _encrypt($field)
     {   
         if (!empty($this->{$field}))

@@ -9,13 +9,15 @@ class Checkin extends DataMapper {
     {
         parent::__construct($id);
     }
+
+    //Saves nonexisting Facebook checkin IDs
     function save_checkins($id, $checkins)
     {
         $fb_checkin = new facebookusers_checkin();
         foreach ($checkins as $checkin) {
             if (!$this->get_checkin($checkin['checkin_id']))
-            { 
-                $sql = "INSERT INTO checkins (id, author_id, latitude, longitude, created_at) VALUES ('{$checkin['checkin_id']}', '{$checkin['author_uid']}', {$checkin['coords']['latitude']}, {$checkin['coords']['longitude']}, {$checkin['timestamp']})";
+            {
+                $sql = "INSERT INTO checkins (id, author_id, latitude, longitude, created_at) VALUES ('{$checkin['checkin_id']}', '{$checkin['author_uid']}', '{$checkin['coords']['latitude']}', '{$checkin['coords']['longitude']}', {$checkin['timestamp']})";
                 $this->db->query($sql);
             }
                 if(!$fb_checkin->get_fb_checkin($id, $checkin['checkin_id']))
@@ -25,6 +27,11 @@ class Checkin extends DataMapper {
                 }
         }
     }
+
+    //Queries Facebook Open Graph API with existing checkin IDs from database
+    //and saves Location and Place data from Facebook
+    //Note: needs to be updated to follow Facebook's new event checkin (lack of coordinates in checkin FQL data 
+    //and requires an additional Open Graph API query in order to get place data) 
     function add_checkins($checkins)
     {
         $places = array();
@@ -38,9 +45,7 @@ class Checkin extends DataMapper {
         foreach ($checkins as $checkin) 
         {
             $message = NULL;
-            echo "1";
-            echo $checkin['checkin_id'];
-            echo "separator";
+
             $place_id = $facebook->api("/{$checkin['checkin_id']}");
             
             if(isset($place_id['message']))
@@ -51,9 +56,7 @@ class Checkin extends DataMapper {
             {
                 if (!isset($place_id['place']['start_time']))
                 {
-                    echo "2";
-                    echo $place_id['place']['id'];
-                    echo "<br/><br/>";
+
                     $place = $facebook->api("/{$place_id['place']['id']}?fields=name,category,checkins,location,talking_about_count,website,id,were_here_count");
                     $place_obj->add_place($place);
                     $place_name = $place_id['place']['name'];
@@ -61,9 +64,7 @@ class Checkin extends DataMapper {
                 }
                 else
                 {
-                    echo "3";
-                    echo $place_id['place']['id'];
-                    echo "<br/><br/>";
+
                     $place_name = $place_id['place']['location'];
                     $place_author = $place_id['from']['name'];
 
@@ -78,13 +79,17 @@ class Checkin extends DataMapper {
         }
         return $places;
     }
-    //make a general get_checkins($selects) function
+
+    //Retrieves all of the checkin IDs corresponding to the Facebook User ID
+    //Note: make a general get_checkins($selects) function
     function retrieve_checkin_ids($id) {
         //$sql = "SELECT checkin_id FROM facebookusers_checkins WHERE facebookuser_id = $id";
         $sql = "SELECT checkin_id FROM facebookusers_checkins LEFT JOIN checkins on checkin_id = checkins.id WHERE facebookuser_id = $id AND place_id IS NULL";
         $checkins = $this->db->query($sql)->result_array();
         return $checkins;
     }
+
+    //Returns Boolean; checks if checkin exists with given checkin ID
     function get_checkin($id) {
         $checkin = $this->where('id', $id)->get();
         if ($checkin->id)
@@ -96,6 +101,8 @@ class Checkin extends DataMapper {
             return FALSE;
         }
     }
+
+    //Queries the checkin databse for the 10 most recent checkins by friends for feed data
     function get_feed_checkins($id) {
         $sql = "SELECT place_name, place_id, website, author_id, author_name, message, latitude, longitude, (UNIX_TIMESTAMP(NOW())-checkins.created_at) as time_diff FROM checkins
             LEFT JOIN places on place_id = places.id
@@ -103,6 +110,8 @@ class Checkin extends DataMapper {
             WHERE facebookuser_id = $id ORDER BY checkins.created_at DESC LIMIT 10";    
         return $this->db->query($sql)->result_array();
     }
+
+    //Queries the database for all checkin data needed for the heatmap
     function get_map_checkins() {
         $sql = "SELECT places.id, author_name, message, place_name, website, 
                 checkins, were_here_count, talking_about_count, category,

@@ -11,6 +11,7 @@ class Facebookuser extends DataMapper {
         parent::__construct($id);
     }
 
+    //Saves the user into Facebookuser table
     function register($facebook_user) {
         $this->id = $facebook_user['id'];
         $this->first_name = $facebook_user['first_name'];
@@ -20,6 +21,7 @@ class Facebookuser extends DataMapper {
         $this->db->query($sql);
     }
 
+    //Checks if the user has logged into HotSposts with facebook before
     function is_fbmember($facebook_user) {
         $sql = "SELECT * FROM facebookusers WHERE id = {$facebook_user['id']}";
         $user = $this->db->query($sql)->result_array();

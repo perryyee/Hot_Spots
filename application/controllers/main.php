@@ -48,16 +48,16 @@ class Main extends CI_Controller {
 	function topspots() 
 	{
 		if ($this->is_login())
-				{
+		{
 			$data['page'] = 'modal';
 			$data['title'] = 'HotSpots | TopSpots';
-					$this->load->view('header', $data);
-					$this->load->view('topspots');
-				}
-				else
-				{
-						redirect(base_url());
-				}
+			$this->load->view('header', $data);
+			$this->load->view('topspots');
+		}
+		else
+		{
+				redirect(base_url());
+		}
 	}
 
 	//function to check if user is logged in
@@ -73,7 +73,7 @@ class Main extends CI_Controller {
 	function logout()
 	{
 		$this->session->sess_destroy();
-		session_destroy();
+		//session_destroy();
 		redirect(base_url());
 	}
 
@@ -88,61 +88,63 @@ class Main extends CI_Controller {
 		}
 		$html='';
 
-		foreach($checkins as $checkin)
-		{
-			if (isset($checkin['website'])) {
-				$website = preg_split('~[ |;]~', $checkin['website'])[0];
-				if ($website[0]!='h')
-				{
-					$website = 'http://'.$website;
-				}
-			}
-			else 
+		if ($checkins) {
+			foreach($checkins as $checkin)
 			{
-				$website = "http://www.facebook.com/{$checkin['place_id']}";
-			}
-			
-			if (isset($checkin['author_name']))
-			{
-				$html.="<div class='feed_data list-group-item'>
-							<div class='col-lg-3 no-margins'>
-								<img class='thumb' src='/assets/images/facebook.png' alt='FB'>
-							</div>
-							<div class='col-lg-8 col-lg-offset-4 no-margins'>
-								<p class='live_feed'>
-									<a href='http://www.facebook.com/{$checkin['author_id']}'><strong>{$checkin['author_name']}</strong></a> 
-									has just checked into 
-									<a href='$website'>{$checkin['place_name']}</a> 
-									via Facebook.
-								</p>";
-			
-				if ($checkin['time_diff']>518400) 
-				{
-					$html .= '	<span class="duration">1 week ago.</span>';
-				}
-				else if(floor($checkin['time_diff']/86400)>=1)
-				{
-					$diff = floor($checkin["time_diff"]/86400);
-					$html .= '	<span class="duration">'.$diff.' day(s) ago.</span>';
-				}
-				else if(floor($checkin['time_diff']/3600)>=1)
-				{
-					$diff = floor($checkin["time_diff"]/3600);
-					$html .= '	<span class="duration">'.$diff.' hour(s) ago.</span>';
-				}
-				else if(floor($checkin['time_diff']/60)>=1)
-				{
-					$diff = floor($checkin["time_diff"]/60);
-					$html .= '	<span class="duration">'.$diff.' minute(s) ago.</span>';
-				}
-				else
-				{
-				 $html .= '		<span class="duration">'.$checkin["time_diff"].' second(s) ago.</span>';
-				}
-				$html.="	</div>
-						</div>";
+				if (isset($checkin['website'])) {
+					$website = preg_split('~[ |;]~', $checkin['website'])[0];
+					if ($website[0]!='h')
+					{
+						$website = 'http://'.$website;
 					}
 				}
+				else 
+				{
+					$website = "http://www.facebook.com/{$checkin['place_id']}";
+				}
+				
+				if (isset($checkin['author_name']))
+				{
+					$html.="<div class='feed_data list-group-item'>
+								<div class='col-lg-3 no-margins'>
+									<img class='thumb' src='/assets/images/facebook.png' alt='FB'>
+								</div>
+								<div class='col-lg-8 col-lg-offset-4 no-margins'>
+									<p class='live_feed'>
+										<a href='http://www.facebook.com/{$checkin['author_id']}'><strong>{$checkin['author_name']}</strong></a> 
+										has just checked into 
+										<a href='$website'>{$checkin['place_name']}</a> 
+										via Facebook.
+									</p>";
+				
+					if ($checkin['time_diff']>518400) 
+					{
+						$html .= '	<span class="duration">1 week ago.</span>';
+					}
+					else if(floor($checkin['time_diff']/86400)>=1)
+					{
+						$diff = floor($checkin["time_diff"]/86400);
+						$html .= '	<span class="duration">'.$diff.' day(s) ago.</span>';
+					}
+					else if(floor($checkin['time_diff']/3600)>=1)
+					{
+						$diff = floor($checkin["time_diff"]/3600);
+						$html .= '	<span class="duration">'.$diff.' hour(s) ago.</span>';
+					}
+					else if(floor($checkin['time_diff']/60)>=1)
+					{
+						$diff = floor($checkin["time_diff"]/60);
+						$html .= '	<span class="duration">'.$diff.' minute(s) ago.</span>';
+					}
+					else
+					{
+					 $html .= '		<span class="duration">'.$checkin["time_diff"].' second(s) ago.</span>';
+					}
+					$html.="	</div>
+							</div>";
+				}
+			}
+		}
 			$html.="	<div class='feed_data list-group-item'>
 							<a href='javascript:;'><h4 class='text-center'>See All Activity...</h4></a>
 						</div>";
@@ -198,17 +200,20 @@ class Main extends CI_Controller {
 	{
 		$this->load->model('checkin');
 		$points = array();
-			$checkins = NULL;
+		$checkins = NULL;
 			
-			if(isset($this->session->userdata['user_session']['facebookuser_id']))
-			{
-					$checkins = $this->checkin->get_map_checkins();
-			}
+		if(isset($this->session->userdata['user_session']['facebookuser_id']))
+		{
+			$checkins = $this->checkin->get_map_checkins();
+		}
+
+		if ($checkins) {
 			foreach($checkins as $checkin)
 			{	
 				$points[] = "new google.maps.LatLng({$checkin['latitude']}, {$checkin['longitude']})";
 			}
-			return json_encode($points);
+		}
+		return json_encode($points);
 	}
 
 	//Function to pass text input to the next view

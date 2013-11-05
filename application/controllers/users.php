@@ -82,6 +82,7 @@ class Users extends Main {
                 'facebookuser_id' => $user->facebookuser_id,
                 'logged_in' => TRUE
             );
+            session_start();
             $this->session->set_userdata('user_session', $user_details);
             $this->session->set_userdata('first_time', FALSE);
             $this->session->set_userdata('account', 'default');
@@ -128,11 +129,9 @@ class Users extends Main {
             $first_time = FALSE;
             if($this->user->is_member($new_user))
             {
-                echo '1';
                 //check last update before adding checkins
                 if (!$this->facebookuser->is_fbmember($new_user))
                 {
-                    echo '2';
                     $this->facebookuser->register($new_user);
                     $first_time = 1;
                 }
@@ -141,10 +140,8 @@ class Users extends Main {
             }
             else
             {
-                echo '3';
                 if (!$this->facebookuser->is_fbmember($new_user)) 
                 {
-                    echo '4';
                     $first_time = 1;
                     $this->facebookuser->register($new_user);
                 }
